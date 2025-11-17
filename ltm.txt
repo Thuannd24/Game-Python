@@ -1,0 +1,78 @@
+bài toán đổi tiền , vd 38 duyệt mảng giá trị [10,5,2,1] lấy 38/10 =3 rồi tính amount = 38-3*10 = 8, mảng tiền đổi là 10 10 10 , tiếp tục 8/5 = 1 amount = 8-5 = 3 , tiền đổi 10 10 10 5 .... .tương tự 
+//
+ if (Character.isUpperCase(x)) z = (char) ((x - 'A' + y - 'A') % 26 + 'A');
+//
+x = (char) ((x - base - dich + 26) % 26 + base);
+//
+int[] tp = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};//thập phân
+        String[] lm = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};// la mã
+        for(int i = 0;i<tp.length;i++){
+            while(dec >=tp[i]){
+                rm+=lm[i];
+                dec-=tp[i];
+            }
+        }
+//
+String ans = URLEncoder.encode(s, "UTF-8"); // mã hóa URL 
+// nguyên âm
+Collections.sort(a, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return dem(s1) - dem(s2);
+            }
+        }); sort 
+ if (ngAm.indexOf(str.charAt(i)) != -1) cnt++; // nếu có chỉ số cnt ++
+// mảng list add dc index 0 vào đầu chứ bình thg nó tự add tại index 1
+//sort 
+Collections.sort(a, new Comparator<EmployeeY>(){
+            @Override
+            public int compare(EmployeeY o1, EmployeeY o2) {
+                return o1.getStartDate().compare(o2.getStartDate());
+            }
+        });
+// 6 tháng gần nhất 
+LocalDate today = LocalDate.now();
+        List<CustomerY> ans = new ArrayList<>();
+        for (CustomerY x: cus) {
+            String t = x.getLastTransactionDate().toString();
+            t = t.substring(0, 10);
+            LocalDate old = LocalDate.parse(t);
+            long thang = ChronoUnit.MONTHS.between(old, today);
+            if(thang >=6) ans.add(x);
+        }
+// Character.isAlphabetic(x) check k pải là kí tự đặc biệt
+//sỏt theo nguyên âm và thứ tự từ điển
+ Collections.sort(a, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                if(dem(s1)!=dem(s2)) return dem(s1) - dem(s2);
+                return s1.compareTo(s2);
+            }
+        });
+
+//Collections.rotate(a, -1); xoay trái , 1 là xoay phải 1 lần 
+//chuyẻn ve base 64
+String s = new String(a)
+byte[] án = Base64.getDecoder().decode(s) ;
+taoj mang int [] a = new int[100]
+byte [] e = {(byte)ans,(byte)pos};
+//xor
+byte[] bin = "PTIT".getBytes();
+        for(int i=0;i<s.length;i++){
+            s[i] = (byte) (s[i]^ bin[i % bin.length]);
+        }
+//octal hexa 02x
+String res="";
+        for(byte i:s){
+            res+= String.format("%03o", i&0xFF);
+	
+        }
+// ArrayList<Byte>res = new ArrayList<>();
+//int [] arr = {1,2,5,10};
+// max hóa cases
+ int dich = s.length()%7;
+        for(char x: s.toCharArray()){
+            char base = Character.isUpperCase(x) ? 'A' : 'a';
+            x = (char) ((x - base - dich + 26) % 26 + base);
+            ans+=x;
+        }
