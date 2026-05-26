@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.pttk</groupId>
+    <artifactId>HDV2</artifactId>
+    <version>1</version>
+    <packaging>jar</packaging>
+<!--sửa version theo 11 17 ...-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
+        <exec.mainClass>com.pttk.hdv2.HDV2</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>1.62.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-protobuf</artifactId>
+            <version>1.62.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>1.62.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <configuration>
+                    <protocArtifact>com.google.protobuf:protoc:3.25.1:exe:${os.detected.classifier}</protocArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.62.2:exe:${os.detected.classifier}</pluginArtifact>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+
+<!--        import GRPC.*; // Import các class sinh ra từ proto-->
+<!--        import com.google.gson.*;-->
+<!--        import io.grpc.*;-->
+<!--        import java.net.*;-->
+<!--        import java.io.*;-->
+<!--        import java.util.*;-->
+
+
+<!--tạo thư mục proto ngang cấp vs java , tạo file judge.proto-->
+<!--        syntax = "proto3";-->
+<!--        option java_multiple_files = true;-->
+<!--        package GRPC;-->
+
+<!--        service JudgeService {-->
+<!--        rpc Request (JudgeRequest) returns (JudgeResponse);-->
+<!--        rpc Submit (SubmitRequest) returns (SubmitResponse);-->
+<!--        }-->
+
+<!--        message JudgeRequest {-->
+<!--        string student_code = 1;-->
+<!--        string question_alias = 2;-->
+<!--        }-->
+
+<!--        message JudgeResponse {-->
+<!--        string request_id = 1;-->
+<!--        string data = 2;-->
+<!--        }-->
+
+<!--        message SubmitRequest {-->
+<!--        string student_code = 1;-->
+<!--        string question_alias = 2;-->
+<!--        string request_id = 3;-->
+<!--        string answer = 4;-->
+<!--        }-->
+
+<!--        message SubmitResponse {-->
+<!--        string status = 1;-->
+<!--        string message = 2;-->
+<!--        }-->
+
+<!--plugins / protobuf / compile , lifecycle/compile , reload all project  -->
+<!--        public static void main(String[] args) {-->
+<!--        String host = "36.50.135.242", studentCode = "B22DCCN840", qCode = "EelaDhzB";-->
+<!--        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, 2240).usePlaintext().build();-->
+<!--        JudgeServiceGrpc.JudgeServiceBlockingStub stub = JudgeServiceGrpc.newBlockingStub(channel);-->
+<!--        JudgeResponse res = stub.request(JudgeRequest.newBuilder()-->
+<!--        .setStudentCode(studentCode).setQuestionAlias(qCode).build());-->
+<!--        long sum = Arrays.stream(res.getData().split(","))-->
+<!--        .mapToLong(num -> Long.parseLong(num.trim())).sum();-->
+<!--        SubmitResponse subRes = stub.submit(SubmitRequest.newBuilder()-->
+<!--        .setStudentCode(studentCode).setQuestionAlias(qCode)-->
+<!--        .setRequestId(res.getRequestId()).setAnswer(String.valueOf(sum)).build());-->
+<!--        System.out.println(subRes.getStatus() + ": " + subRes.getMessage());-->
+<!--        }-->
+
+
+
+
+<!--        public static void main(String[] args) throws MalformedURLException, IOException {-->
+<!--        String studentCode  = "B22DCCN840", qCode = "U6tY3nWR" ,urlR = "http://36.50.135.242:2230/api/rest/character";-->
+<!--        HttpURLConnection  get = (HttpURLConnection) new URL(urlR + "?studentCode=" + studentCode +"&qCode=" + qCode).openConnection();-->
+<!--        BufferedReader bf = new BufferedReader(new InputStreamReader(get.getInputStream()));-->
+<!--        String res = bf.readLine();-->
+<!--        bf.close();-->
+<!--        JsonObject jsonin = JsonParser.parseString(res).getAsJsonObject();-->
+<!--        String requestId = jsonin.get("requestId").getAsString();-->
+<!--        String data = jsonin.get("data").getAsString();-->
+<!--        String [] word = data.split("\\s+");-->
+<!--        Arrays.sort(word);-->
+<!--        String ans = String.join(" ", word);-->
+<!--        HttpURLConnection post = (HttpURLConnection) new URL(urlR + "/submit").openConnection();-->
+<!--        post.setRequestMethod("POST");-->
+<!--        post.setDoOutput(true);-->
+<!--        post.setRequestProperty("Content-Type", "application/json");-->
+
+<!--        JsonObject jsonout = new JsonObject();-->
+<!--        jsonout.addProperty("studentCode", studentCode);-->
+<!--        jsonout.addProperty("qCode", qCode);-->
+<!--        jsonout.addProperty("requestId", requestId);-->
+<!--        jsonout.addProperty("answer", ans);-->
+
+<!--        OutputStream os = post.getOutputStream();-->
+<!--        os.write(jsonout.toString().getBytes());-->
+<!--      -->
+<!--        System.out.println(post.getResponseCode() + " " + post.getResponseMessage());-->
+
+<!--        }-->
