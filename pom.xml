@@ -140,7 +140,7 @@
 
 
 
-<!--        public static void main(String[] args) throws MalformedURLException, IOException {-->
+       <!-- public static void main(String[] args) throws MalformedURLException, IOException {-->
 <!--        String studentCode  = "B22DCCN840", qCode = "U6tY3nWR" ,urlR = "http://36.50.135.242:2230/api/rest/character";-->
 <!--        HttpURLConnection  get = (HttpURLConnection) new URL(urlR + "?studentCode=" + studentCode +"&qCode=" + qCode).openConnection();-->
 <!--        BufferedReader bf = new BufferedReader(new InputStreamReader(get.getInputStream()));-->
@@ -168,4 +168,175 @@
 <!--      -->
 <!--        System.out.println(post.getResponseCode() + " " + post.getResponseMessage());-->
 
-<!--        }-->
+<!--        } -->
+
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "Wt686b4O", url = "http://36.50.135.242:2230/api/rest/path";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+    
+    JsonArray arr = jo.getAsJsonArray("data");
+    JsonObject best = null;
+    double maxOverdue = Double.MIN_VALUE;
+    
+    for (JsonElement el : arr) {
+        JsonObject c = el.getAsJsonObject();
+        if ("OVERDUE".equals(c.get("status").getAsString()) && c.get("overdueAmount").getAsDouble() > maxOverdue) {
+            maxOverdue = c.get("overdueAmount").getAsDouble();
+            best = c;
+        }
+    }
+
+    String subUrl = url + "/" + best.get("customerId").getAsString() 
+            + "?studentCode=" + studentCode + "&qCode=" + qCode 
+            + "&requestId=" + jo.get("requestId").getAsString() 
+            + "&status=OVERDUE&page=" + best.get("page").getAsInt();
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(subUrl).openConnection();
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "4C7J5314", url = "http://36.50.135.242:2230/api/rest/path";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+    String invoiceId = jo.getAsJsonArray("data").get(0).getAsJsonObject().get("id").getAsString();
+    String subUrl = url + "/" + invoiceId 
+            + "?studentCode=" + studentCode + "&qCode=" + qCode 
+            + "&requestId=" + jo.get("requestId").getAsString() + "&currency=USD";
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(subUrl).openConnection();
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "y6ss4pkd", url = "http://36.50.135.242:2230/api/rest/header";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+    JsonObject data = jo.getAsJsonObject("data");
+
+    List<String> events = new ArrayList<>();
+    for (JsonElement el : data.getAsJsonArray("events")) events.add(el.getAsString());
+    String p = data.get("nonce").getAsString() + ":" + String.join("|", events) + ":" + studentCode.toUpperCase();
+
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(data.get("signingKey").getAsString().getBytes("UTF-8"), "HmacSHA256"));
+    byte[] raw = mac.doFinal(p.getBytes("UTF-8"));
+
+    StringBuilder sb = new StringBuilder();
+    for (byte b : raw) sb.append(String.format("%02x", b));
+
+    JsonObject out = new JsonObject();
+    out.addProperty("studentCode", studentCode);
+    out.addProperty("qCode", qCode);
+    out.addProperty("requestId", jo.get("requestId").getAsString());
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(url + "/submit").openConnection();
+    sub.setRequestMethod("POST");
+    sub.setRequestProperty("Content-Type", "application/json");
+    sub.setRequestProperty("X-Signature", sb.toString());
+    sub.setDoOutput(true);
+    sub.getOutputStream().write(out.toString().getBytes("UTF-8"));
+
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "iN28lkyV", url = "http://36.50.135.242:2230/api/rest/header";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    
+    String checksum = con.getHeaderField("X-Checksum");
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+
+    JsonObject out = new JsonObject();
+    out.addProperty("studentCode", studentCode);
+    out.addProperty("qCode", qCode);
+    out.addProperty("requestId", jo.get("requestId").getAsString());
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(url + "/submit").openConnection();
+    sub.setRequestMethod("POST");
+    sub.setRequestProperty("Content-Type", "application/json");
+    sub.setRequestProperty("X-Checksum", checksum);
+    sub.setDoOutput(true);
+    sub.getOutputStream().write(out.toString().getBytes("UTF-8"));
+
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "DfivBng7", url = "http://36.50.135.242:2230/api/rest/method";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+    JsonObject data = jo.getAsJsonObject("data");
+
+    JsonObject ans = new JsonObject();
+    ans.addProperty("status", "RESOLVED");
+
+    JsonObject out = new JsonObject();
+    out.addProperty("studentCode", studentCode);
+    out.addProperty("qCode", qCode);
+    out.add("answer", ans);
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(url + "/" + jo.get("requestId").getAsString()).openConnection();
+    sub.setRequestMethod("POST");
+    sub.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+    sub.setRequestProperty("Content-Type", "application/json");
+    sub.setRequestProperty("If-Match", data.get("etag").getAsString());
+    sub.setDoOutput(true);
+    sub.getOutputStream().write(out.toString().getBytes("UTF-8"));
+
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+<!-- public static void main(String[] args) throws Exception {
+    String studentCode = "B22DCCN840", qCode = "wJX2BzXw", url = "http://36.50.135.242:2230/api/rest/method";
+    HttpURLConnection con = (HttpURLConnection) new URL(url + "?studentCode=" + studentCode + "&qCode=" + qCode).openConnection();
+    JsonObject jo = JsonParser.parseString(new Scanner(con.getInputStream()).useDelimiter("\\A").next()).getAsJsonObject();
+
+    JsonObject ans = new JsonObject();
+    ans.addProperty("status", "ACTIVE");
+    ans.addProperty("activatedBy", studentCode.toUpperCase());
+
+    JsonObject out = new JsonObject();
+    out.addProperty("studentCode", studentCode);
+    out.addProperty("qCode", qCode);
+    out.add("answer", ans);
+
+    HttpURLConnection sub = (HttpURLConnection) new URL(url + "/" + jo.get("requestId").getAsString()).openConnection();
+    sub.setRequestMethod("PUT");
+    sub.setRequestProperty("Content-Type", "application/json");
+    sub.setDoOutput(true);
+    sub.getOutputStream().write(out.toString().getBytes("UTF-8"));
+
+    System.out.println(sub.getResponseCode() + " " + new Scanner(sub.getInputStream()).useDelimiter("\\A").next());
+} -->
+
+<!-- public static void main(String[] args) throws Exception {
+    String host = "36.50.135.242", studentCode = "B22DCCN840", qCode = "LFUhzNDV";
+    ManagedChannel channel = ManagedChannelBuilder.forAddress(host, 2240).usePlaintext().build();
+    TypedJudgeServiceGrpc.TypedJudgeServiceBlockingStub stub = TypedJudgeServiceGrpc.newBlockingStub(channel);
+
+    TypedJudgeResponse res = stub.requestTyped(TypedJudgeRequest.newBuilder()
+            .setStudentCode(studentCode).setQuestionAlias(qCode).build());
+    
+    EnrollmentData data = res.getEnrollment();
+    List<String> completed = data.getCompletedCoursesList();
+    List<String> missList = new ArrayList<>();
+    
+    for (String s : data.getRequiredCoursesList()) {
+        if (!completed.contains(s)) missList.add(s);
+    }
+    Collections.sort(missList);
+
+    double gap = Math.max(0.0, data.getMinGpa() - data.getGpa());
+    gap = Double.parseDouble(String.format(Locale.US, "%.2f", gap));
+    boolean eli = missList.isEmpty() && gap == 0.0;
+
+    EnrollmentAnswer ans = EnrollmentAnswer.newBuilder()
+            .setEligible(eli)
+            .addAllMissingCourses(missList)
+            .setGpaGap(gap)
+            .build();
+
+    TypedSubmitResponse subRes = stub.submitTyped(TypedSubmitRequest.newBuilder()
+            .setStudentCode(studentCode).setQuestionAlias(qCode)
+            .setRequestId(res.getRequestId()).setEnrollmentAnswer(ans).build());
+
+    System.out.println(subRes.getStatus() + " " + subRes.getMessage());
+    channel.shutdown();
+} -->
